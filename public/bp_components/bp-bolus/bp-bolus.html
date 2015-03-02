@@ -1,0 +1,120 @@
+<!--
+Copyright (c) 2015 Stephan James Dick. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+* Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above
+  copyright notice, this list of conditions and the following disclaimer
+  in the documentation and/or other materials provided with the
+  distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<link rel="import" href="../../bower_components/core-localstorage/core-localstorage.html">
+<link rel="import" href="../../bower_components/core-toolbar/core-toolbar.html">
+<link rel="import" href="../../bower_components/core-menu/core-menu.html">
+<link rel="import" href="../../bower_components/core-item/core-item.html">
+<link rel="import" href="../../bower_components/core-header-panel/core-header-panel.html">
+<link rel="import" href="../../bower_components/core-drawer-panel/core-drawer-panel.html">
+<link rel="import" href="../../bower_components/core-scaffold/core-scaffold.html">
+<link rel="import" href="../../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../../bower_components/core-icons/maps-icons.html">
+<link rel="import" href="../../bower_components/core-icons/notification-icons.html">
+<link rel="import" href="../../bower_components/core-pages/core-pages.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/paper-shadow/paper-shadow.html">
+<link rel="import" href="../../bower_components/paper-input/paper-autogrow-textarea.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input-decorator.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bp-webcomponents/bp-webcomponents.html">
+<link rel="import" href="bp-bolus-entry.html">
+
+<polymer-element name="bp-bolus">
+    <template id="bp-bolus-template">
+        <link rel="stylesheet" href="bp-bolus.css">
+        <core-scaffold id="drawer">
+            <core-header-panel name="headerPanel" navigation flex>
+                <core-toolbar>
+                    <span></span>
+                </core-toolbar>
+                <core-menu on-core-select="{{selectAction}}">
+                    <core-item num="0" label="bolus-project" icon="notification:event-note" class="font-scalable big"></core-item>
+                    <core-item num="1" label="Debug" icon="help" class="font-scalable big"></core-item>
+                </core-menu>
+            </core-header-panel>
+            <span tool>{{pageTitle}}<paper-shadow z="1"></paper-shadow></span>
+
+            <div fit class="content">
+                <core-pages id="pages" selected="0">
+                    <div>
+                        <div horizontal layout class="proposal">
+                            <div left vertical layout class="proposal-block insulin">
+                                <core-icon src="resources/icons/insulin.svg" class="small-icon"></core-icon>
+                                <div class="proposal-text">{{proposalInsulin}}</div>
+                            </div>
+                            <div left vertical layout class="proposal-block carbohydrates">
+                                <core-icon src="resources/icons/carbohydrates.svg" class="small-icon"></core-icon>
+                                <div class="proposal-text">{{carbohydrates}}</div>
+                            </div>
+                            <div left vertical layout class="proposal-block glucose">
+                                <core-icon src="resources/icons/glucose.svg" class="small-icon"></core-icon>
+                                <div class="proposal-text">{{proposalGlucose}}</div>
+                            </div>
+                        </div>
+                        <section>
+                            <bp-bolus-entry icon="query-builder"
+                                             label="{{labels.editHour}}"
+                                             value="{{editHour}}" min="0" max="23"></bp-bolus-entry>
+                            <bp-bolus-entry clazz="glucose" src="resources/icons/glucoseMinimum.svg"
+                                             label="{{labels.glucoseMinimum}}"
+                                             value="{{glucoseMinimal}}"
+                                             step="5" min="70" max="200"></bp-bolus-entry>
+                            <bp-bolus-entry clazz="carbohydrates" src="resources/icons/insulinPerCarbohydrates.svg"
+                                             label="{{labels.insulinPerCarbohydrates}}"
+                                             value="{{insulinPerCarbohydrates}}"
+                                             step="0.1" min="0.1" max="5"></bp-bolus-entry>
+                            <bp-bolus-entry clazz="insulin" src="resources/icons/glucosePerInsulin.svg"
+                                             label="{{labels.glucosePerInsulin}}"
+                                             value="{{glucosePerInsulin}}"
+                                             step="5" min="1" max="250"></bp-bolus-entry>
+                            <bp-bolus-entry clazz="carbohydrates" src="resources/icons/glucosePerCarbohydrates.svg"
+                                             label="{{labels.glucosePerCarbohydrates}}"
+                                             value="{{glucosePerCarbohydrates}}"
+                                             step="5" min="1" max="250"></bp-bolus-entry>
+                            <bp-bolus-entry clazz="glucose" src="resources/icons/glucose.svg"
+                                             value="{{glucose}}" step="5" min="1" max="350"
+                                             label="{{labels.glucose}}"></bp-bolus-entry>
+                            <bp-bolus-entry clazz="carbohydrates" src="resources/icons/carbohydrates.svg"
+                                             value="{{carbohydrates}}" step="0.25" min="0" max="12"
+                                             label="{{labels.carbohydrates}}"></bp-bolus-entry>
+                        </section>
+                    </div>
+                    <section>
+                        <paper-button on-tap="{{reset}}">Reset</paper-button>
+                        <paper-button on-tap="{{export}}">Export</paper-button>
+                        <paper-button on-tap="{{import}}">Import</paper-button>
+                        <paper-input multiline rows="25" label="Import/Export" value="{{importExport}}"></paper-input>
+                    </section>
+                </core-pages>
+            </div>
+        </core-scaffold>
+    </template>
+    <script src="bp-bolus.js"></script>
+</polymer-element>

@@ -1,0 +1,217 @@
+:host {
+    font-family: sans-serif;
+}
+
+core-toolbar {
+    background: #000000;
+    color: #fafafa;
+}
+
+core-header-panel {
+    background: #616161;
+    color: #fafafa;
+}
+
+core-scaffold::shadow core-toolbar {
+    background: #000;
+    color: #eee;
+}
+
+core-scaffold::shadow core-header-panel {
+    background: #fff;
+    color: #212121;
+}
+
+paper-input-decorator /deep/ ::-webkit-input-placeholder {
+    color: orangered;
+}
+
+paper-input-decorator /deep/ ::-moz-placeholder {
+    color: orangered;
+}
+
+paper-input-decorator /deep/ :-ms-input-placeholder {
+    color: orangered;
+}
+
+paper-input /deep/ .unfocused-underline {
+    background: none;
+}
+
+paper-input /deep/ .focused-underline {
+    background: none;
+}
+
+.span-shadow {
+    display: inline-block;
+    padding: 8px;
+}
+
+.content {
+    padding: 0px;
+    background: #eee;
+}
+
+paper-slider {
+    width: 100%;
+}
+
+section {
+    max-width: 1000px;
+    padding: 20px 0;
+}
+
+.big-icon {
+    height: 32px;
+    width: 32px;
+}
+
+.small-icon {
+    height: 24px;
+    width: 24px;
+    opacity: 0.2;
+}
+
+.proposal-block {
+    width: 100%;
+    padding-left: 6px;
+    padding-top: 6px;
+    padding-right: 12px;
+    padding-bottom: 24px;
+    font-size: xx-large;
+    font-weight: bold;
+    margin: 0;
+}
+
+.proposal-text {
+    text-align: center;
+    width: 100%;
+}
+
+.insulin {
+    background-color: #ffff8d;
+}
+
+.glucose {
+    background-color: rgba(247, 19, 0, 0.38);
+}
+
+.carbohydrates {
+    background-color: rgba(129, 213, 0, 0.38);
+}
+
+.current {
+    background-color: #fff;
+}
+
+.proposal {
+    margin: 0;
+    margin-bottom: 12px;
+    padding: 0;
+}
+
+paper-slider::shadow #slider-input::shadow {
+    margin: 140px;
+    background-color: red;
+}
+
+paper-slider::shadow #sliderKnobInner,
+paper-slider::shadow #sliderKnobInner::before,
+paper-slider::shadow #sliderBar::shadow #activeProgress {
+    background-color: black;
+
+}
+
+* paper-slider::shadow #sliderKnobInner {
+    width: 0px;
+    height: 0px;
+}
+
+* paper-slider::shadow #sliderBar {
+    height: 10px;
+    margin: 0px;
+}
+
+.slider-insulin paper-slider::shadow #sliderKnobInner,
+.slider-insulin paper-slider::shadow #sliderKnobInner::before,
+.slider-insulin paper-slider::shadow #sliderBar::shadow #activeProgress {
+    background-color: #ddd500;
+}
+
+.slider-carbohydrates paper-slider::shadow #sliderKnobInner,
+.slider-carbohydrates paper-slider::shadow #sliderKnobInner::before,
+.slider-carbohydrates paper-slider::shadow #sliderBar::shadow #activeProgress {
+    background-color: rgb(109, 189, 0);
+}
+
+.slider-glucose paper-slider::shadow #sliderKnobInner,
+.slider-glucose paper-slider::shadow #sliderKnobInner::before,
+.slider-glucose paper-slider::shadow #sliderBar::shadow #activeProgress {
+    background-color: rgb(168, 15, 0);
+}
+
+.entry {
+    margin: 0;
+    padding: 0;
+    padding-top: 16px;
+    width: 100%;
+    height: 52px;
+    float: right;
+}
+
+.entryIcon {
+    margin: 0;
+    padding: 0;
+    margin-left: 8px;
+    float: left;
+    height: 100%;
+}
+
+.staples {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+    position: relative;
+}
+
+.stapleBottom,
+.stapleTop {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.stapleBottom {
+    z-index: 1;
+}
+
+.stapleTop {
+    font-size: smaller;
+    z-index: 0;
+    width: 100%;
+}
+
+.help {
+    color: #cccccc;
+    float: left;
+    margin-left: 16px;
+}
+
+.value {
+    color: black;
+    float: right;
+    margin-right: 16px;
+    font-size: medium;
+}
+
+headerPanel {
+    z-index: 10;
+}
+
+mainContainer {
+    z-index: 10;
+}
