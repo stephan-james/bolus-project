@@ -51,6 +51,7 @@ class Polymerase
       @innerState.detached
 
     prototype.created = ->
+      @log "created"
       @innerState.created = true
       @onCreated()
 
@@ -58,6 +59,7 @@ class Polymerase
       prototype.onCreated = ->
 
     prototype.ready = ->
+      @log "ready"
       @innerState.ready = true
       @onReady()
 
@@ -65,6 +67,7 @@ class Polymerase
       prototype.onReady = ->
 
     prototype.attached = ->
+      @log "attached"
       @innerState.attached = true
       @onAttached()
 
@@ -72,6 +75,7 @@ class Polymerase
       prototype.onAttached = ->
 
     prototype.domReady = ->
+      @log "domReady"
       @innerState.domReady = true
       @onDomReady()
 
@@ -79,13 +83,14 @@ class Polymerase
       prototype.onDomReady = ->
 
     prototype.detached = ->
+      @log "detached"
       @innerState.detached = true
       @onDetached()
 
     if not prototype.onDetached
       prototype.onDetached = ->
 
-    prototype.log = (objects...) ->
+    prototype.log = (objects) ->
       Log.log(name, objects)
 
     Polymer name, prototype

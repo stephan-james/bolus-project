@@ -35,10 +35,12 @@ Polymerase.setup "bp-bolus-entry",
   immediateValue: 0
 
   valueChanged: ->
+    @log "valueChanged"
     if @isDomReady()
       @immediateValue = @value
 
   immediateValueChanged: ->
+    @log "immediateValueChanged"
     @value = @immediateValue
 
   onDomReady: ->

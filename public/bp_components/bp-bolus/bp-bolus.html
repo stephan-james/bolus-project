@@ -99,7 +99,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             <bp-bolus-entry icon="query-builder"
                                             label="{{labels.editHour}}"
                                             value="{{editHour}}"
-                                            step="{{Step}}" min="{{Min}}" max="{{Max}}"></bp-bolus-entry>
+                                            step="{{editHourStep}}" min="{{editHourMin}}" max="{{editHourMax}}"></bp-bolus-entry>
                             <bp-bolus-entry clazz="glucose" src="resources/icons/glucoseMinimum.svg"
                                             label="{{labels.glucoseMinimum}}"
                                             value="{{glucoseMinimal}}"
@@ -107,7 +107,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             <bp-bolus-entry clazz="carbohydrates" src="resources/icons/insulinPerCarbohydrates.svg"
                                             label="{{labels.insulinPerCarbohydrates}}"
                                             value="{{insulinPerCarbohydrates}}"
-                                            step="{{carbohydratesStep}}" min="{{carbohydratesMin}}" max="{{carbohydratesMax}}"></bp-bolus-entry>
+                                            step="{{insulinPerCarbohydratesStep}}" min="{{insulinPerCarbohydratesMin}}" max="{{insulinPerCarbohydratesMax}}"></bp-bolus-entry>
                             <bp-bolus-entry clazz="insulin" src="resources/icons/glucosePerInsulin.svg"
                                             label="{{labels.glucosePerInsulin}}"
                                             value="{{glucosePerInsulin}}"
