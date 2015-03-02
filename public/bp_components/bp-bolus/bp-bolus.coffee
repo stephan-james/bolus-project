@@ -24,6 +24,57 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# -------------------------------------------------------------------------------------------------
+
+GlucoseUnit =
+
+  MMOL_L:
+    id: "mmol/l"
+    step: 0.25
+
+  MG_DL:
+    id: "mg/dl"
+    step: 5
+
+  to_mmol_l: (mg_dl) ->
+    mg_dl * 0.0555
+
+  to_mg_dl: (mmol_l) ->
+    mmol_l * 18.0182
+
+  switch: (glucoseUnit, glucose) ->
+    if glucoseUnit == GlucoseUnit.MG_DL
+      @to_mg_dl(glucose)
+    else
+      @to_mmol_l(glucose)
+
+# -------------------------------------------------------------------------------------------------
+
+CarbohydatesUnit =
+
+  MG:
+    id: "mg"
+    factor: 1
+    step: 5
+    min: 0
+    max: 15 * 12
+
+  BE10:
+    id: "BE (10mg)"
+    factor: 10
+    step: 0.25
+    min: 0
+    max: 15 * 12 / 10
+
+  BE12:
+    id: "BE (12mg)"
+    factor: 12
+    step: 0.25
+    min: 0
+    max: 15
+
+# -------------------------------------------------------------------------------------------------
+
 class DataLine
 
   constructor: (@glucoseMinimal, @glucoseMaximal, @insulinPerCarbohydrates, @glucosePerInsulin, @glucosePerCarbohydrates) ->
@@ -51,12 +102,22 @@ class DataLine
   proposeCarbohydrates: (g) ->
     Math.abs(Math.min(0.0, ( g - @glucoseMinimal ) / @glucosePerCarbohydrates))
 
+  switchGlucoseUnit: (glucoseUnit) ->
+    @glucoseMinimal = GlucoseUnit.switch(glucoseUnit, @glucoseMinimal)
+    @glucoseMaximal = GlucoseUnit.switch(glucoseUnit, @glucoseMaximal)
+    @glucosePerInsulin = GlucoseUnit.switch(glucoseUnit, @glucosePerInsulin)
+    @glucosePerCarbohydrates = GlucoseUnit.switch(glucoseUnit, @glucosePerCarbohydrates)
+
 # -------------------------------------------------------------------------------------------------
 
 DataLocalStorage =
   blob:
     creationTime: Datex.currentTime()
     updateTime: null
+    glucoseUnit: GlucoseUnit.MG_DL
+    glucoseUnitSelected: false
+    carbohydatesUnit: CarbohydatesUnit.BE12
+    carbohydatesUnitSelected: false
     dataLines: [
       new DataLine(80, 160, 1.1, 75, 85),
       new DataLine(80, 160, 1.1, 75, 85),
@@ -89,16 +150,13 @@ DataLocalStorage =
   loadBlob: (newBlob) ->
     @blob = newBlob
     @blob.dataLines = (new DataLine(i.glucoseMinimal, i.glucoseMaximal, i.insulinPerCarbohydrates, i.glucosePerInsulin, i.glucosePerCarbohydrates) for i in @blob.dataLines)
-
-  reset: ->
-    index = 0
-    for dataLine in @blob.dataLines
-      dataLine.glucoseMinimal = 70 + index * 5
-      dataLine.glucoseMaximal = dataLine.glucoseMinimal + 10
-      dataLine.insulinPerCarbohydrates = 1 + index * 0.1
-      dataLine.glucosePerInsulin = 10 + index * 5
-      dataLine.glucosePerCarbohydrates = 20 + index * 5
-      index++
+    @blob.glucoseUnit = GlucoseUnit.MG_DL if not @blob.glucoseUnit?
+    @blob.glucoseUnitSelected = false if not @blob.glucoseUnitSelected?
+    @blob.carbohydatesUnit = CarbohydatesUnit.BE12 if not @blob.carbohydatesUnit?
+    @blob.carbohydatesUnitSelected = false if not @blob.carbohydatesUnitSelected?
+    #@blob.glucoseUnit = GlucoseUnit.MG_DL # @todo:remove
+    #@blob.glucoseUnitSelected = false # @todo:remove
+    #@blob.carbohydatesUnitSelected = false # @todo:remove
 
   save: ->
     LocalStorage.save("DataLocalStorage", @blob)
@@ -112,11 +170,49 @@ DataLocalStorage =
   currentDataLine: ->
     @dataLine(Datex.currentHour())
 
+  isGlucoseUnitSelected: ->
+    @blob.glucoseUnitSelected
+
+  getGlucoseUnit: ->
+    @blob.glucoseUnit
+
+  setGlucoseUnit: (glucoseUnit) ->
+    @blob.glucoseUnit = glucoseUnit
+
+  switchGlucoseUnit: (glucoseUnit) ->
+    @blob.glucoseUnitSelected = true
+    return if glucoseUnit == @getGlucoseUnit()
+    for dataLine in @blob.dataLines
+      dataLine.switchGlucoseUnit(glucoseUnit)
+    @setGlucoseUnit(glucoseUnit)
+
+  isCarbohydatesUnitSelected: ->
+    @blob.carbohydatesUnitSelected
+
+  getCarbohydatesUnit: ->
+    @blob.carbohydatesUnit
+
+  switchCarbohydatesUnit: (carbohydatesUnit) ->
+    @blob.carbohydatesUnitSelected = true
+    return if carbohydatesUnit == @getCarbohydatesUnit()
+    @blob.carbohydatesUnit = carbohydatesUnit
+
   export: ->
     JSON.stringify(@blob)
 
   import: (data) ->
-    @loadBlob(JSON.parse(data))
+    try
+      newBlob = JSON.parse(data)
+      @loadBlob(newBlob)
+    catch exception
+      alert(exception)
+
+  asCurrentUnit: (glucoseInMgPerDL) ->
+    if @getGlucoseUnit() == GlucoseUnit.MG_DL
+      glucoseInMgPerDL
+    else
+      Log.info(@)
+      Mathx.rounded(GlucoseUnit.to_mmol_l(glucoseInMgPerDL), @getGlucoseUnit().step)
 
 DataLocalStorage.load()
 
@@ -124,34 +220,17 @@ DataLocalStorage.load()
 
 Polymerase.setup "bp-bolus",
 
-  importExport: "---"
-
-  reset: ->
-    DataLocalStorage.reset()
-    @save()
-
-  export: ->
-    @importExport = DataLocalStorage.export()
-
-  import: ->
-    DataLocalStorage.import(@importExport)
-    @compute()
-
   onReady: ->
-    Log.enter("ready")
     @pages = @$.pages
     @pageTitle = "bolus-project"
-    Log.exit("ready")
 
   onDomReady: ->
-    Log.enter("domReady")
     @carbohydrates = 0
-    @glucose = 120
+    @glucose = DataLocalStorage.asCurrentUnit(120)
     @editHour = Datex.currentHour()
     @compute()
-    Log.exit("domReady")
-
-#OutOfOrder =
+    @$.chooseGlucoseUnitDialog.opened = not DataLocalStorage.isGlucoseUnitSelected()
+    @$.chooseCarbohydatesUnitDialog.opened = not DataLocalStorage.isCarbohydatesUnitSelected()
 
   selectAction: (e, detail) ->
     if detail.isSelected
@@ -159,6 +238,21 @@ Polymerase.setup "bp-bolus",
       @pages.selected = selected.num.nodeValue
       @pageTitle = selected.label.nodeValue
       @$.drawer.togglePanel()
+
+  chooseMmolPerL: -> @chooseGlucoseUnit(GlucoseUnit.MMOL_L)
+  chooseMgPerDl: -> @chooseGlucoseUnit(GlucoseUnit.MG_DL)
+  chooseGlucoseUnit: (glucoseUnit) ->
+    DataLocalStorage.switchGlucoseUnit(glucoseUnit)
+    DataLocalStorage.save()
+    window.location.reload()
+
+  chooseMg: -> @chooseCarbohydatesUnit(CarbohydatesUnit.MG)
+  chooseBE10: -> @chooseCarbohydatesUnit(CarbohydatesUnit.BE10)
+  chooseBE12: -> @chooseCarbohydatesUnit(CarbohydatesUnit.BE12)
+  chooseCarbohydatesUnit: (glucoseUnit) ->
+    DataLocalStorage.switchCarbohydatesUnit(glucoseUnit)
+    DataLocalStorage.save()
+    window.location.reload()
 
   initByEditDataLine: ->
     dataLine = @editDataLine()
@@ -172,37 +266,65 @@ Polymerase.setup "bp-bolus",
     DataLocalStorage.dataLine(@editHour)
 
   proposalInsulin: 0
-  proposalGlucose: 120
+  proposalGlucose: DataLocalStorage.asCurrentUnit(120)
   proposalCarbohydrates: 0
-  carbohydrates: 0
-  carbohydratesChanged: -> @compute()
-  glucose: 120
-  glucoseChanged: -> @compute()
+
   editHour: Datex.currentHour()
   editHourChanged: -> @compute()
+  editHourStep: 1
+  editHourMin: 0
+  editHourMax: 23
+
   glucoseMinimal: DataLocalStorage.currentDataLine().glucoseMinimal
   glucoseMinimalChanged: -> @save()
+  glucoseMinimalStep: DataLocalStorage.getGlucoseUnit().step
+  glucoseMinimalMin: DataLocalStorage.asCurrentUnit(70)
+  glucoseMinimalMax: DataLocalStorage.asCurrentUnit(200)
+
   glucoseMaximal: DataLocalStorage.currentDataLine().glucoseMaximal
   glucoseMaximalChanged: -> @save()
+
   insulinPerCarbohydrates: DataLocalStorage.currentDataLine().insulinPerCarbohydrates
   insulinPerCarbohydratesChanged: -> @save()
+  insulinPerCarbohydratesStep: 0.1
+  insulinPerCarbohydratesMin: 0.1
+  insulinPerCarbohydratesMax: 5
+
   glucosePerInsulin: DataLocalStorage.currentDataLine().glucosePerInsulin
   glucosePerInsulinChanged: -> @save()
+  glucosePerInsulinStep: DataLocalStorage.getGlucoseUnit().step
+  glucosePerInsulinMin: DataLocalStorage.asCurrentUnit(1)
+  glucosePerInsulinMax: DataLocalStorage.asCurrentUnit(250)
+
   glucosePerCarbohydrates: DataLocalStorage.currentDataLine().glucosePerCarbohydrates
   glucosePerCarbohydratesChanged: -> @save()
+  glucosePerCarbohydratesStep: DataLocalStorage.getGlucoseUnit().step
+  glucosePerCarbohydratesMin: DataLocalStorage.asCurrentUnit(1)
+  glucosePerCarbohydratesMax: DataLocalStorage.asCurrentUnit(250)
+
+  glucose: DataLocalStorage.asCurrentUnit(120)
+  glucoseChanged: -> @compute()
+  glucoseStep: DataLocalStorage.getGlucoseUnit().step
+  glucoseMin: DataLocalStorage.asCurrentUnit(1)
+  glucoseMax: DataLocalStorage.asCurrentUnit(350)
+
+  carbohydrates: 0
+  carbohydratesChanged: -> @compute()
+  carbohydratesStep: DataLocalStorage.getCarbohydatesUnit().step
+  carbohydratesMin: DataLocalStorage.getCarbohydatesUnit().min
+  carbohydratesMax: DataLocalStorage.getCarbohydatesUnit().max
 
   labels:
-    editHour: "Aggregated time range [hour]"
-    glucoseMinimum: "Target glucose in up to 3 hours [mg/dL]"
-    insulinPerCarbohydrates: "Insulin per carbohydrates [ie]"
-    glucosePerInsulin: "Glucose reduction per insulin unit [mg/dL]"
-    glucosePerCarbohydrates: "Glucose increase per carbohydrate unit [mg/dL]"
-    carbohydrates: "Targeted carbohydrate units [12mg]"
-    glucose: "Current glucose [mg/dL]"
+    editHour: "Aggregated time range"
+    glucoseMinimum: "Target glucose in a few hours"
+    insulinPerCarbohydrates: "Insulin per carbohydrate unit"
+    glucosePerInsulin: "Glucose reduction per insulin unit"
+    glucosePerCarbohydrates: "Glucose increase per carbohydrate unit"
+    carbohydrates: "Targeted carbohydrate units"
+    glucose: "Current glucose"
 
   compute: ->
-    if not @isDomReady()
-      return
+    return if not @isDomReady()
     dataLine = @editDataLine()
     @glucoseMinimal = dataLine.glucoseMinimal
     @glucoseMaximal = dataLine.glucoseMaximal
@@ -211,15 +333,14 @@ Polymerase.setup "bp-bolus",
     @glucosePerCarbohydrates = dataLine.glucosePerCarbohydrates
     [minimal,maximal] = dataLine.calculate(@glucose, @carbohydrates)
     @proposalInsulin = dataLine.proposeInsulin(@glucose, @carbohydrates)
-    @proposalGlucose = Mathx.rounded(dataLine.comeOut(@glucose, @carbohydrates, @proposalInsulin), 5)
+    @proposalGlucose = Mathx.rounded(dataLine.comeOut(@glucose, @carbohydrates, @proposalInsulin), DataLocalStorage.getGlucoseUnit().step)
     @proposalCarbohydrates = Mathx.rounded(dataLine.proposeCarbohydrates(@glucose), 0.25)
     if @proposalCarbohydrates > @carbohydrates
       @carbohydrates = @proposalCarbohydrates
       @compute()
 
   save: ->
-    if not @isDomReady()
-      return
+    return if not @isDomReady()
     dataLine = @editDataLine()
     dataLine.glucoseMinimal = @glucoseMinimal
     dataLine.glucoseMaximal = @glucoseMaximal
@@ -227,4 +348,19 @@ Polymerase.setup "bp-bolus",
     dataLine.glucosePerInsulin = @glucosePerInsulin
     dataLine.glucosePerCarbohydrates = @glucosePerCarbohydrates
     DataLocalStorage.save()
+    @compute()
+
+# --- debug pane ----------------------------------------------------------------------
+
+  importExport: "---"
+
+  reset: ->
+    LocalStorage.clear()
+    window.location.reload()
+
+  export: ->
+    @$.importExportArea.value = DataLocalStorage.export()
+
+  import: ->
+    DataLocalStorage.import(@$.importExportArea.value)
     @compute()

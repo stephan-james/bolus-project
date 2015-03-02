@@ -43,12 +43,28 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="../../bower_components/paper-input/paper-autogrow-textarea.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input-decorator.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-action-dialog.html">
 <link rel="import" href="../bp-webcomponents/bp-webcomponents.html">
 <link rel="import" href="bp-bolus-entry.html">
 
 <polymer-element name="bp-bolus">
     <template id="bp-bolus-template">
         <link rel="stylesheet" href="bp-bolus.css">
+
+        <paper-action-dialog id="chooseGlucoseUnitDialog" closeSelector="[dismissive]" autoCloseDisabled="true" layered="true">
+            <p>choose units...</p>
+            <paper-button on-tap="{{chooseMmolPerL}}" dismissive>mmol/l</paper-button>
+            <paper-button on-tap="{{chooseMgPerDl}}" dismissive>mg/dl</paper-button>
+        </paper-action-dialog>
+
+        <paper-action-dialog id="chooseCarbohydatesUnitDialog" closeSelector="[dismissive]" autoCloseDisabled="true" layered="true">
+            <p>choose units...</p>
+            <paper-button on-tap="{{chooseMg}}" dismissive>mg</paper-button>
+            <paper-button on-tap="{{chooseBE10}}" dismissive>BE (10mg)</paper-button>
+            <paper-button on-tap="{{chooseBE12}}" dismissive>BE (12mg)</paper-button>
+        </paper-action-dialog>
+
         <core-scaffold id="drawer">
             <core-header-panel name="headerPanel" navigation flex>
                 <core-toolbar>
@@ -63,6 +79,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
             <div fit class="content">
                 <core-pages id="pages" selected="0">
+
                     <div>
                         <div horizontal layout class="proposal">
                             <div left vertical layout class="proposal-block insulin">
@@ -80,37 +97,40 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         </div>
                         <section>
                             <bp-bolus-entry icon="query-builder"
-                                             label="{{labels.editHour}}"
-                                             value="{{editHour}}" min="0" max="23"></bp-bolus-entry>
+                                            label="{{labels.editHour}}"
+                                            value="{{editHour}}"
+                                            step="{{Step}}" min="{{Min}}" max="{{Max}}"></bp-bolus-entry>
                             <bp-bolus-entry clazz="glucose" src="resources/icons/glucoseMinimum.svg"
-                                             label="{{labels.glucoseMinimum}}"
-                                             value="{{glucoseMinimal}}"
-                                             step="5" min="70" max="200"></bp-bolus-entry>
+                                            label="{{labels.glucoseMinimum}}"
+                                            value="{{glucoseMinimal}}"
+                                            step="{{glucoseMinimalStep}}" min="{{glucoseMinimalMin}}" max="{{glucoseMinimalMax}}"></bp-bolus-entry>
                             <bp-bolus-entry clazz="carbohydrates" src="resources/icons/insulinPerCarbohydrates.svg"
-                                             label="{{labels.insulinPerCarbohydrates}}"
-                                             value="{{insulinPerCarbohydrates}}"
-                                             step="0.1" min="0.1" max="5"></bp-bolus-entry>
+                                            label="{{labels.insulinPerCarbohydrates}}"
+                                            value="{{insulinPerCarbohydrates}}"
+                                            step="{{carbohydratesStep}}" min="{{carbohydratesMin}}" max="{{carbohydratesMax}}"></bp-bolus-entry>
                             <bp-bolus-entry clazz="insulin" src="resources/icons/glucosePerInsulin.svg"
-                                             label="{{labels.glucosePerInsulin}}"
-                                             value="{{glucosePerInsulin}}"
-                                             step="5" min="1" max="250"></bp-bolus-entry>
+                                            label="{{labels.glucosePerInsulin}}"
+                                            value="{{glucosePerInsulin}}"
+                                            step="{{glucosePerInsulinStep}}" min="{{glucosePerInsulinMin}}" max="{{glucosePerInsulinMax}}"></bp-bolus-entry>
                             <bp-bolus-entry clazz="carbohydrates" src="resources/icons/glucosePerCarbohydrates.svg"
-                                             label="{{labels.glucosePerCarbohydrates}}"
-                                             value="{{glucosePerCarbohydrates}}"
-                                             step="5" min="1" max="250"></bp-bolus-entry>
+                                            label="{{labels.glucosePerCarbohydrates}}"
+                                            value="{{glucosePerCarbohydrates}}"
+                                            step="{{glucosePerCarbohydratesStep}}" min="{{glucosePerCarbohydratesMin}}" max="{{glucosePerCarbohydratesMax}}"></bp-bolus-entry>
                             <bp-bolus-entry clazz="glucose" src="resources/icons/glucose.svg"
-                                             value="{{glucose}}" step="5" min="1" max="350"
-                                             label="{{labels.glucose}}"></bp-bolus-entry>
+                                            label="{{labels.glucose}}"
+                                            value="{{glucose}}"
+                                            step="{{glucoseStep}}" min="{{glucoseMin}}" max="{{glucoseMax}}"></bp-bolus-entry>
                             <bp-bolus-entry clazz="carbohydrates" src="resources/icons/carbohydrates.svg"
-                                             value="{{carbohydrates}}" step="0.25" min="0" max="12"
-                                             label="{{labels.carbohydrates}}"></bp-bolus-entry>
+                                            label="{{labels.carbohydrates}}"
+                                            value="{{carbohydrates}}"
+                                            step="{{carbohydratesStep}}" min="{{carbohydratesMin}}" max="{{carbohydratesMax}}"></bp-bolus-entry>
                         </section>
                     </div>
                     <section>
                         <paper-button on-tap="{{reset}}">Reset</paper-button>
                         <paper-button on-tap="{{export}}">Export</paper-button>
                         <paper-button on-tap="{{import}}">Import</paper-button>
-                        <paper-input multiline rows="25" label="Import/Export" value="{{importExport}}"></paper-input>
+                        <textarea id="importExportArea" width="100%">{{importExport}}</textarea>
                     </section>
                 </core-pages>
             </div>

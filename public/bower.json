@@ -14,20 +14,21 @@
     "tests"
   ],
   "dependencies": {
-    "webcomponentsjs": "Polymer/webcomponentsjs#^0.5",
-    "polymer": "Polymer/polymer#^0.5",
-    "core-localstorage": "Polymer/core-localstorage#^0.5",
-    "core-toolbar": "Polymer/core-toolbar#^0.5",
-    "core-menu": "Polymer/core-menu#^0.5",
-    "core-item": "Polymer/core-item#^0.5",
-    "core-header-panel": "Polymer/core-header-panel#^0.5",
-    "core-drawer-panel": "Polymer/core-drawer-panel#^0.5",
-    "core-scaffold": "Polymer/core-scaffold#^0.5",
-    "core-icons": "Polymer/core-icons#^0.5",
-    "core-pages": "Polymer/core-pages#^0.5",
-    "paper-button": "Polymer/paper-button#^0.5",
-    "paper-slider": "Polymer/paper-slider#^0.5",
-    "paper-shadow": "Polymer/paper-shadow#^0.5",
-    "paper-input": "Polymer/paper-input#^0.5"
+    "webcomponentsjs": "Polymer/webcomponentsjs",
+    "polymer": "Polymer/polymer",
+    "core-localstorage": "Polymer/core-localstorage",
+    "core-toolbar": "Polymer/core-toolbar",
+    "core-menu": "Polymer/core-menu",
+    "core-item": "Polymer/core-item",
+    "core-header-panel": "Polymer/core-header-panel",
+    "core-drawer-panel": "Polymer/core-drawer-panel",
+    "core-scaffold": "Polymer/core-scaffold",
+    "core-icons": "Polymer/core-icons",
+    "core-pages": "Polymer/core-pages",
+    "paper-button": "Polymer/paper-button",
+    "paper-slider": "Polymer/paper-slider",
+    "paper-shadow": "Polymer/paper-shadow",
+    "paper-input": "Polymer/paper-input",
+    "paper-dialog": "Polymer/paper-dialog"
   }
 }

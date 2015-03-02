@@ -85,7 +85,9 @@ class Polymerase
     if not prototype.onDetached
       prototype.onDetached = ->
 
-    Polymer name, prototype
+    prototype.log = (objects...) ->
+      Log.log(name, objects)
 
+    Polymer name, prototype
 
 window.Polymerase = new Polymerase()

@@ -31,7 +31,6 @@ class Mathx
   rounded: (number, rounder) ->
     Math.round(number / rounder) * rounder
 
-
 window.Mathx = new Mathx()
 
 # -----------------------------------------------------------------------
@@ -50,7 +49,6 @@ class Datex
   currentTime: ->
     date = new Date()
     "#{date.getHours()}:#{date.getMinutes()}:#{date.getSeconds()}"
-
 
 window.Datex = new Datex()
 
@@ -73,6 +71,11 @@ class LocalStorage
     if localStorage?
       localStorage.setItem name, JSON.stringify(value)
 
+  clear: ->
+    localStorage.clear()
+
+  unload: (name) ->
+    localStorage.removeItem(name)
 
 window.LocalStorage = new LocalStorage()
 

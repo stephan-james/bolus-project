@@ -40,8 +40,8 @@ class Log
   info: (text) ->
     @log(@LEVEL.INFO, text)
 
-  log: (level, text) ->
-    console.log("[#{level}]: #{text}") if @enabled
+  log: (level, text...) ->
+    console.log("[#{level}]: ", text) if @enabled
 
 
 window.Log = new Log()
