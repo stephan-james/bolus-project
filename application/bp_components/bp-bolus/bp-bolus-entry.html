@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!--
   Copyright (c) 2015, http://stephan-james.github.io/bolus-project
   All rights reserved.
@@ -29,26 +28,33 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<html manifest="cache.manifest">
-<head>
-    <title>bolus-project</title>
+<link rel="import" href="../../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../bp-webcomponents/">
 
-    <meta name="application-name" content="Bolus">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-touch-fullscreen" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="format-detection" content="telephone=no">
+<polymer-element name="bp-bolus-entry" attributes="clazz icon src label value step min max">
+    <template>
+        <link rel="stylesheet" href="bp-bolus.css">
+        <div class="entry">
+            <div class="entryIcon">
+                <template if="{{src}}">
+                    <core-icon src="{{src}}" class="big-icon"></core-icon>
+                </template>
+                <template if="{{icon}}">
+                    <core-icon icon="{{icon}}" class="big-icon"></core-icon>
+                </template>
+            </div>
+            <div class="staples">
+                <div class="stapleBottom slider-{{clazz}}">
+                    <paper-slider immediateValue="{{immediateValue}}" step="{{step}}" min="{{min}}" max="{{max}}"></paper-slider>
+                </div>
+                <div class="stapleTop">
+                    <div class="help">{{label}}</div>
+                    <div class="value">{{value}}</div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script src="bp-bolus-entry.js"></script>
+</polymer-element>
 
-    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
-
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="icon" sizes="196x196" href="icons/bolus-icon.png">
-    <link rel="apple-touch-icon" href="icons/bolus-icon.png">
-    <link rel="import" href="bp_components/bp-bolus/bp-bolus.html">
-</head>
-<body fullbleed vertical layout unresolved>
-<bp-bolus></bp-bolus>
-</body>
-</html>
