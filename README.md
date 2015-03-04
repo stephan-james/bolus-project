@@ -1,13 +1,13 @@
 # bolus-project
 The "I just can't believe it takes only one finger to calculate my bolus" app.
 
-## The App
+## App
 
-To become familiar with the app itself you should read further at the projects homepage under
+To become familiar with the app itself you should read further at the projects homepage at
 
 http://stephan-james.github.io/bolus-project
 
-## The Code
+## Code
 
 To experiment with the code and the underlying technologies see the projects wiki at
 
