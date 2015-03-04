@@ -1,5 +1,5 @@
 # bolus-project
-The "I just can't believe it takes only one finger to calculate my bolus" app.
+The "I just can't believe it only takes one finger to calculate my bolus" app.
 
 ## App
 
