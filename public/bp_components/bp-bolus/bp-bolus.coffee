@@ -1,46 +1,175 @@
-# Copyright (c) 2015 Stephan James Dick. All rights reserved.
+# Copyright (c) 2015, http://stephan-james.github.io/bolus-project
+# All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are
-# met:
+# modification, are permitted provided that the following conditions are met:
 #
-# * Redistributions of source code must retain the above copyright
-#   notice, this list of conditions and the following disclaimer.
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
 #
-# * Redistributions in binary form must reproduce the above
-#   copyright notice, this list of conditions and the following disclaimer
-#   in the documentation and/or other materials provided with the
-#   distribution.
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# * Neither the name of bolus-project nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+class UnitStorageData extends StorageData
+
+  constructor: (name, unit) ->
+    super name,
+      selected: false
+      unit: unit
+
+  isSelected: ->
+    @data.selected
+
+  setUnit: (unit) ->
+    @data.selected = true
+    @data.unit = unit
+    @save()
+
+  getUnit: ->
+    @data.unit
+
+  getId: ->
+    @getUnit().id
+
+  getCurrentStep: ->
+    @getUnit().step
+
+  @asUnit = (id) ->
+    id: id
 
 # -------------------------------------------------------------------------------------------------
 
-GlucoseUnit =
+class LanguageUnit extends UnitStorageData
 
-  MMOL_L:
+  @LANGUAGES =
+    "en":
+      "language-en": "English"
+      "language-de": "Deutsch"
+      "language-es": "Español"
+      "hour": "hour"
+      "editHour": "Aggregated time range"
+      "glucoseMinimum": "Target glucose in a few hours"
+      "insulinPerCarbohydrates": "Insulin per carbohydrate unit"
+      "glucosePerInsulin": "Glucose reduction per insulin unit"
+      "glucosePerCarbohydrates": "Glucose increase per carbohydrate unit"
+      "glucose": "Current glucose"
+      "carbohydrates": "Targeted carbohydrate units"
+      "step": "Step"
+      "stepOf": "of"
+      "languageQuestion": "Prefered language"
+      "languageExplanation": ""
+      "disclaimerTitle": "Disclaimer"
+      "disclaimer": """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."""
+      "chooseMoreInfo": "More info..."
+      "chooseDecline": "Decline"
+      "chooseAccept": "Accept"
+      "glucoseUnitQuestion": "Which glucose measurement unit is the right for you?"
+      "glucoseUnitExplanation": "Which glucose measurement unit is the right for you?"
+      "carbohydratesUnitQuestion": "Which unit do you prefer for your carbohydrates?"
+      "carbohydratesUnitExplanation": "Which unit do you prefer for your carbohydrates?"
+    "de":
+      "hour": "Stunde"
+      "editHour": "Aggregierte Uhrzeit"
+      "glucoseMinimum": "Zielglukosespiegel"
+      "insulinPerCarbohydrates": "Insulin pro Broteinheit"
+      "glucosePerInsulin": "Glukosereduktion pro I.E."
+      "glucosePerCarbohydrates": "Glukoseanstieg pro B.E."
+      "glucose": "Aktueller Glukosewert"
+      "carbohydrates": "Gewünschte B.E."
+      "step": "Schritt"
+      "stepOf": "von"
+      "disclaimerTitle": "Wichtiger Hinweis"
+    #"disclaimer": "...@todo"
+      "chooseMoreInfo": "Mehr Infos..."
+      "chooseDecline": "Ablehnen"
+      "chooseAccept": "Akzeptieren"
+      "glucoseUnitQuestion": "Bevorzugte Glukoseeinheit"
+      "glucoseUnitExplanation": "Die Glukoseeinheit wird in der Regel auf dem Display Ihres Messgerätes angegeben. In Deutschland ist die häufigst verwendete Glukoseeinheit mg/dL."
+      "carbohydratesUnitQuestion": "Bevorzugte Kohlenhydrateinheit"
+      "carbohydratesUnitExplanation": "In Deutschland ist die häufigst verwendete Kohlenhydrateinheit die Broteinheit mit 12 mg pro Portion."
+    "es":
+      "hour": "hora"
+      "editHour": "Agregada Tiempo"
+      "glucoseMinimum": "Target espejo glucosa"
+      "insulinPerCarbohydrates": "La insulina por unidad de pan"
+      "glucosePerInsulin": "Reducción de glucosa por I.E."
+      "glucosePerCarbohydrates": "Aumento de glucosa por B.E."
+      "glucose": "Valor actual de glucosa"
+      "carbohydrates": "Carbohidratos"
+      "step": "Paso"
+      "stepOf": "de los"
+      "disclaimerTitle": "Nota importante"
+    #"disclaimer": "...@todo"
+      "chooseMoreInfo": "Más Infos..."
+      "chooseDecline": "Rechazar"
+      "chooseAccept": "Aceptar"
+      "glucoseUnitQuestion": "Unidad de glucosa preferida"
+      "glucoseUnitExplanation": ""
+      "carbohydratesUnitQuestion": "Resto de carbohidrato preferidos"
+      "carbohydratesUnitExplanation": ""
+
+  getText: (code) ->
+    text = LanguageUnit.LANGUAGES[@getId()][code]
+    if text?
+      text
+    else
+      text = LanguageUnit.LANGUAGES["en"][code]
+      if text?
+        text
+      else
+        Log.warn("LanguageUnit: '#{code}' not found")
+        "(#{code} not found)"
+
+  @getLanguageIds: ->
+    Object.keys(LanguageUnit.LANGUAGES)
+
+languageUnit = new LanguageUnit("LanguageUnit", UnitStorageData.asUnit("en"))
+
+# -------------------------------------------------------------------------------------------------
+
+disclaimerUnit = new UnitStorageData("DisclaimerUnit", {})
+
+# -------------------------------------------------------------------------------------------------
+
+class GlucoseUnit extends UnitStorageData
+
+  @MMOL_L =
     id: "mmol/l"
     step: 0.25
 
-  MG_DL:
+  @MG_DL =
     id: "mg/dl"
     step: 5
 
   to_mmol_l: (mg_dl) ->
-    Mathx.rounded(mg_dl * 0.0555, @MMOL_L.step)
+    Mathx.rounded(mg_dl * 0.0555, GlucoseUnit.MMOL_L.step)
 
   to_mg_dl: (mmol_l) ->
-    Mathx.rounded(mmol_l * 18.0182, @MG_DL.step)
+    Mathx.rounded(mmol_l * 18.0182, GlucoseUnit.MG_DL.step)
 
   switch: (glucoseUnit, glucose) ->
     if glucoseUnit == GlucoseUnit.MG_DL
@@ -48,30 +177,73 @@ GlucoseUnit =
     else
       @to_mmol_l(glucose)
 
+  mgdlToCurrent: (glucoseInMgPerDL) ->
+    if @getId() == GlucoseUnit.MG_DL.id
+      glucoseInMgPerDL
+    else
+      @to_mmol_l(glucoseInMgPerDL)
+
+glucoseUnit = new GlucoseUnit("GlucoseUnit", GlucoseUnit.MG_DL)
+
 # -------------------------------------------------------------------------------------------------
 
-CarbohydatesUnit =
+class CarbohydratesUnit extends UnitStorageData
 
-  MG:
-    id: "mg"
+  @MG_1 =
+    id: "1 mg"
     factor: 1
     step: 5
     min: 0
     max: 15 * 12
+    insulinPerCarbohydrates:
+      default: 0.08
+      step: 0.01
+      min: 0.01
+      max: 1.60
 
-  BE10:
-    id: "BE (10mg)"
+  @MG_10 =
+    id: "10 mg"
     factor: 10
     step: 0.25
     min: 0
     max: 15 * 12 / 10
+    insulinPerCarbohydrates:
+      default: 0.85
+      step: 0.05
+      min: 0.05
+      max: 18.0
 
-  BE12:
-    id: "BE (12mg)"
+  @MG_12 =
+    id: "12 mg"
     factor: 12
     step: 0.25
     min: 0
     max: 15
+    insulinPerCarbohydrates:
+      default: 1.0
+      step: 0.1
+      min: 0.1
+      max: 20.0
+
+  getCurrentMin: ->
+    @getUnit().min
+
+  getCurrentMax: ->
+    @getUnit().max
+
+  getInsulinPerCarbohydratesDefault: ->
+    @getUnit().insulinPerCarbohydrates.default
+
+  getInsulinPerCarbohydratesStep: ->
+    @getUnit().insulinPerCarbohydrates.step
+
+  getInsulinPerCarbohydratesMin: ->
+    @getUnit().insulinPerCarbohydrates.min
+
+  getInsulinPerCarbohydratesMax: ->
+    @getUnit().insulinPerCarbohydrates.max
+
+carbohydratesUnit = new CarbohydratesUnit("CarbohydratesUnit", CarbohydratesUnit.MG_12)
 
 # -------------------------------------------------------------------------------------------------
 
@@ -92,7 +264,8 @@ class DataLine
     [@correctionMinimum(g) + @bolus(c), @correctionMaximum(g) + @bolus(c)]
 
   comeOut: (g, c, i) ->
-    Math.round(g - Math.max(0, i - @bolus(c)) * @glucosePerInsulin + Math.max(0, @bolus(c) - i) / @insulinPerCarbohydrates * @glucosePerCarbohydrates)
+    Math.round(g - Math.max(0, i - @bolus(c)) * @glucosePerInsulin + Math.max(0,
+      @bolus(c) - i) / @insulinPerCarbohydrates * @glucosePerCarbohydrates)
 
   proposeInsulin: (g, c) ->
     if g < @glucoseMinimal and c > 0
@@ -103,141 +276,132 @@ class DataLine
     Math.abs(Math.min(0.0, ( g - @glucoseMinimal ) / @glucosePerCarbohydrates))
 
   switchGlucoseUnit: (glucoseUnit) ->
-    @glucoseMinimal = GlucoseUnit.switch(glucoseUnit, @glucoseMinimal)
-    @glucoseMaximal = GlucoseUnit.switch(glucoseUnit, @glucoseMaximal)
-    @glucosePerInsulin = GlucoseUnit.switch(glucoseUnit, @glucosePerInsulin)
-    @glucosePerCarbohydrates = GlucoseUnit.switch(glucoseUnit, @glucosePerCarbohydrates)
+    @glucoseMinimal = glucoseUnit.switch(glucoseUnit, @glucoseMinimal)
+    @glucoseMaximal = glucoseUnit.switch(glucoseUnit, @glucoseMaximal)
+    @glucosePerInsulin = glucoseUnit.switch(glucoseUnit, @glucosePerInsulin)
+    @glucosePerCarbohydrates = glucoseUnit.switch(glucoseUnit, @glucosePerCarbohydrates)
 
-  switchCarbohydatesUnit: (carbohydatesUnit) ->
+  switchCarbohydratesUnit: (carbohydratesUnit) ->
     # todo
     @insulinPerCarbohydrates = 1.0
 
 # -------------------------------------------------------------------------------------------------
 
-DataLocalStorage =
-  blob:
-    creationTime: Datex.currentTime()
-    updateTime: null
-    glucoseUnit: GlucoseUnit.MG_DL
-    glucoseUnitSelected: false
-    carbohydatesUnit: CarbohydatesUnit.BE12
-    carbohydatesUnitSelected: false
-    dataLines: new DataLine(80, 160, 1.1, 75, 85) for i in [0..23]
+class DataLinesStorage extends StorageData
+
+  @HOURS = [0..23]
+
+  constructor: ->
+    super "DataLinesStorage",
+      creationTime: Datex.currentTime()
+      initialized: false
+      dataLines: (new DataLine(80, 160, 1, 75, 85) for i in DataLinesStorage.HOURS)
 
   load: ->
-    @loadBlob(LocalStorage.load("DataLocalStorage", @blob))
+    super
+    @objectifyDataLines()
 
-  loadBlob: (newBlob) ->
-    @blob = newBlob
-    @blob.dataLines = (new DataLine(i.glucoseMinimal, i.glucoseMaximal, i.insulinPerCarbohydrates, i.glucosePerInsulin, i.glucosePerCarbohydrates) for i in @blob.dataLines)
-    @blob.glucoseUnit = GlucoseUnit.MG_DL if not @blob.glucoseUnit?
-    @blob.glucoseUnitSelected = false if not @blob.glucoseUnitSelected?
-    @blob.carbohydatesUnit = CarbohydatesUnit.BE12 if not @blob.carbohydatesUnit?
-    @blob.carbohydatesUnitSelected = false if not @blob.carbohydatesUnitSelected?
-    #@blob.glucoseUnit = GlucoseUnit.MG_DL # @todo:remove
-    #@blob.glucoseUnitSelected = false # @todo:remove
-    #@blob.carbohydatesUnitSelected = false # @todo:remove
+  objectifyDataLines: ->
+    @data.dataLines = (new DataLine(i.glucoseMinimal, i.glucoseMaximal, i.insulinPerCarbohydrates, i.glucosePerInsulin,
+      i.glucosePerCarbohydrates) for i in @data.dataLines)
 
-  save: ->
-    LocalStorage.save("DataLocalStorage", @blob)
-
-  isNew: ->
-    @blob.updateTime is null
+  isInitialized: ->
+    @data.initialized
 
   dataLine: (hour) ->
-    @blob.dataLines[hour]
+    @data.dataLines[hour]
 
   currentDataLine: ->
     @dataLine(Datex.currentHour())
 
-  isGlucoseUnitSelected: ->
-    @blob.glucoseUnitSelected
+  initialize: ->
+    @data.initialized = true
+    @data.dataLines = (@createDataLine() for i in DataLinesStorage.HOURS)
+    @save()
 
-  getGlucoseUnit: ->
-    @blob.glucoseUnit
-
-  setGlucoseUnit: (glucoseUnit) ->
-    @blob.glucoseUnit = glucoseUnit
-
-  switchGlucoseUnit: (glucoseUnit) ->
-    @blob.glucoseUnitSelected = true
-    return if glucoseUnit == @getGlucoseUnit()
-    for dataLine in @blob.dataLines
-      dataLine.switchGlucoseUnit(glucoseUnit)
-    @setGlucoseUnit(glucoseUnit)
-
-  isCarbohydatesUnitSelected: ->
-    @blob.carbohydatesUnitSelected
-
-  getCarbohydatesUnit: ->
-    @blob.carbohydatesUnit
-
-  switchCarbohydatesUnit: (carbohydatesUnit) ->
-    @blob.carbohydatesUnitSelected = true
-    return if carbohydatesUnit == @getCarbohydatesUnit()
-    for dataLine in @blob.dataLines
-      dataLine.switchCarbohydatesUnit(carbohydatesUnit)
-    @blob.carbohydatesUnit = carbohydatesUnit
+  createDataLine: ->
+    new DataLine(glucoseUnit.mgdlToCurrent(80), glucoseUnit.mgdlToCurrent(160), carbohydratesUnit.getInsulinPerCarbohydratesDefault(), glucoseUnit.mgdlToCurrent(75), glucoseUnit.mgdlToCurrent(85))
 
   export: ->
-    JSON.stringify(@blob)
+    JSON.stringify(@data)
 
   import: (data) ->
     try
-      newBlob = JSON.parse(data)
-      @loadBlob(newBlob)
+      @data = JSON.parse(data)
+      @objectifyDataLines()
     catch exception
       alert(exception)
 
-  asCurrentGlucoseUnit: (glucoseInMgPerDL) ->
-    if @getGlucoseUnit() == GlucoseUnit.MG_DL
-      glucoseInMgPerDL
-    else
-      v = GlucoseUnit.to_mmol_l(glucoseInMgPerDL)
-      console.log v
-      v
-
-DataLocalStorage.load()
-
+DataLinesStorage = new DataLinesStorage()
 
 # -------------------------------------------------------------------------------------------------
 
 Polymerase.setup "bp-bolus",
 
-  onReady: ->
-    @pages = @$.pages
-    @pageTitle = "bolus-project"
-
   onDomReady: ->
-    @$.chooseGlucoseUnitDialog.opened = not DataLocalStorage.isGlucoseUnitSelected()
-    @$.chooseCarbohydatesUnitDialog.opened = not DataLocalStorage.isCarbohydatesUnitSelected()
+    @nextStep()
 
-    @carbohydrates = 0
-    @glucose = DataLocalStorage.asCurrentGlucoseUnit(120)
-    @editHour = Datex.currentHour()
-    @compute()
+  nextStep: ->
+    if not languageUnit.isSelected()
+      @$.chooseLanguageUnitDialog.opened = true
+    else if not disclaimerUnit.isSelected()
+      @$.disclaimerDialog.opened = true
+    else if not glucoseUnit.isSelected()
+      @$.chooseGlucoseUnitDialog.opened = true
+    else if not carbohydratesUnit.isSelected()
+      @$.chooseCarbohydratesUnitDialog.opened = true
+    else if not DataLinesStorage.isInitialized()
+      DataLinesStorage.initialize()
+      window.location.reload()
+    else
+      @startUsage()
 
-  selectAction: (e, detail) ->
-    if detail.isSelected
-      selected = detail.item.attributes
-      @pages.selected = selected.num.nodeValue
-      @pageTitle = selected.label.nodeValue
-      @$.drawer.togglePanel()
+  startUsage: ->
+      @carbohydrates = 0
+      @glucose = glucoseUnit.mgdlToCurrent(120)
+      @editHour = Datex.currentHour()
+      @compute()
 
-  chooseMmolPerL: -> @chooseGlucoseUnit(GlucoseUnit.MMOL_L)
-  chooseMgPerDl: -> @chooseGlucoseUnit(GlucoseUnit.MG_DL)
-  chooseGlucoseUnit: (glucoseUnit) ->
-    DataLocalStorage.switchGlucoseUnit(glucoseUnit)
-    DataLocalStorage.save()
+  selectAction: (event, detail, target) ->
+    @$.pages.selected = event.target.getAttribute('num')
+
+  chooseLanguage: (event, detail, target) ->
+    languageId = event.target.getAttribute('language-id')
+    languageUnit.setUnit(UnitStorageData.asUnit(languageId))
     window.location.reload()
 
-  chooseMg: -> @chooseCarbohydatesUnit(CarbohydatesUnit.MG)
-  chooseBE10: -> @chooseCarbohydatesUnit(CarbohydatesUnit.BE10)
-  chooseBE12: -> @chooseCarbohydatesUnit(CarbohydatesUnit.BE12)
-  chooseCarbohydatesUnit: (glucoseUnit) ->
-    DataLocalStorage.switchCarbohydatesUnit(glucoseUnit)
-    DataLocalStorage.save()
-    window.location.reload()
+  chooseMoreInfo: ->
+    window.location.href = "http://stephan-james.github.io/bolus-project/application/#more-info"
+
+  chooseDecline: ->
+    window.location.href = "http://stephan-james.github.io/bolus-project/application/#declined"
+
+  chooseAccept: ->
+    disclaimerUnit.setUnit(null)
+    @nextStep()
+
+  chooseMmolPerL: ->
+    @chooseGlucoseUnit(GlucoseUnit.MMOL_L)
+
+  chooseMgPerDl: ->
+    @chooseGlucoseUnit(GlucoseUnit.MG_DL)
+
+  chooseGlucoseUnit: (unit) ->
+    glucoseUnit.setUnit(unit)
+    @nextStep()
+
+  chooseMG1: ->
+    @chooseCarbohydratesUnit(CarbohydratesUnit.MG_1)
+
+  chooseMG10: ->
+    @chooseCarbohydratesUnit(CarbohydratesUnit.MG_10)
+
+  chooseMG12: ->
+    @chooseCarbohydratesUnit(CarbohydratesUnit.MG_12)
+
+  chooseCarbohydratesUnit: (unit) ->
+    carbohydratesUnit.setUnit(unit)
+    @nextStep()
 
   initByEditDataLine: ->
     dataLine = @editDataLine()
@@ -248,68 +412,72 @@ Polymerase.setup "bp-bolus",
     @glucosePerCarbohydrates = dataLine.glucosePerCarbohydrates
 
   editDataLine: ->
-    DataLocalStorage.dataLine(@editHour)
+    DataLinesStorage.dataLine(@editHour)
 
   proposalInsulin: 0
-  proposalGlucose: DataLocalStorage.asCurrentGlucoseUnit(120)
+  proposalGlucose: glucoseUnit.mgdlToCurrent(120)
   proposalCarbohydrates: 0
 
-  editHour: Datex.currentHour()
+  editHour: 0
   editHourChanged: -> @compute()
   editHourStep: 1
   editHourMin: 0
   editHourMax: 23
 
-  glucoseMinimal: DataLocalStorage.currentDataLine().glucoseMinimal
+  glucoseMinimal: DataLinesStorage.currentDataLine().glucoseMinimal
   glucoseMinimalChanged: -> @save()
-  glucoseMinimalStep: DataLocalStorage.getGlucoseUnit().step
-  glucoseMinimalMin: DataLocalStorage.asCurrentGlucoseUnit(70)
-  glucoseMinimalMax: DataLocalStorage.asCurrentGlucoseUnit(200)
+  glucoseMinimalStep: glucoseUnit.getCurrentStep()
+  glucoseMinimalMin: glucoseUnit.mgdlToCurrent(70)
+  glucoseMinimalMax: glucoseUnit.mgdlToCurrent(200)
 
-  glucoseMaximal: DataLocalStorage.currentDataLine().glucoseMaximal
+  glucoseMaximal: DataLinesStorage.currentDataLine().glucoseMaximal
   glucoseMaximalChanged: -> @save()
 
-  insulinPerCarbohydrates: DataLocalStorage.currentDataLine().insulinPerCarbohydrates
+  insulinPerCarbohydrates: DataLinesStorage.currentDataLine().insulinPerCarbohydrates
   insulinPerCarbohydratesChanged: -> @save()
-  insulinPerCarbohydratesStep: 0.1
-  insulinPerCarbohydratesMin: 0.1
-  insulinPerCarbohydratesMax: 20
+  insulinPerCarbohydratesStep: carbohydratesUnit.getInsulinPerCarbohydratesStep()
+  insulinPerCarbohydratesMin: carbohydratesUnit.getInsulinPerCarbohydratesMin()
+  insulinPerCarbohydratesMax: carbohydratesUnit.getInsulinPerCarbohydratesMax()
 
-  glucosePerInsulin: DataLocalStorage.currentDataLine().glucosePerInsulin
+  glucosePerInsulin: DataLinesStorage.currentDataLine().glucosePerInsulin
   glucosePerInsulinChanged: -> @save()
-  glucosePerInsulinStep: DataLocalStorage.getGlucoseUnit().step
-  glucosePerInsulinMin: DataLocalStorage.asCurrentGlucoseUnit(5)
-  glucosePerInsulinMax: DataLocalStorage.asCurrentGlucoseUnit(250)
+  glucosePerInsulinStep: glucoseUnit.getCurrentStep()
+  glucosePerInsulinMin: glucoseUnit.mgdlToCurrent(5)
+  glucosePerInsulinMax: glucoseUnit.mgdlToCurrent(250)
 
-  glucosePerCarbohydrates: DataLocalStorage.currentDataLine().glucosePerCarbohydrates
+  glucosePerCarbohydrates: DataLinesStorage.currentDataLine().glucosePerCarbohydrates
   glucosePerCarbohydratesChanged: -> @save()
-  glucosePerCarbohydratesStep: DataLocalStorage.getGlucoseUnit().step
-  glucosePerCarbohydratesMin: DataLocalStorage.asCurrentGlucoseUnit(5)
-  glucosePerCarbohydratesMax: DataLocalStorage.asCurrentGlucoseUnit(250)
+  glucosePerCarbohydratesStep: glucoseUnit.getCurrentStep()
+  glucosePerCarbohydratesMin: glucoseUnit.mgdlToCurrent(5)
+  glucosePerCarbohydratesMax: glucoseUnit.mgdlToCurrent(250)
 
-  glucose: DataLocalStorage.asCurrentGlucoseUnit(120)
+  glucose: glucoseUnit.mgdlToCurrent(120)
   glucoseChanged: -> @compute()
-  glucoseStep: DataLocalStorage.getGlucoseUnit().step
-  glucoseMin: DataLocalStorage.asCurrentGlucoseUnit(5)
-  glucoseMax: DataLocalStorage.asCurrentGlucoseUnit(350)
+  glucoseStep: glucoseUnit.getCurrentStep()
+  glucoseMin: glucoseUnit.mgdlToCurrent(5)
+  glucoseMax: glucoseUnit.mgdlToCurrent(350)
 
   carbohydrates: 0
   carbohydratesChanged: -> @compute()
-  carbohydratesStep: DataLocalStorage.getCarbohydatesUnit().step
-  carbohydratesMin: DataLocalStorage.getCarbohydatesUnit().min
-  carbohydratesMax: DataLocalStorage.getCarbohydatesUnit().max
+  carbohydratesStep: carbohydratesUnit.getCurrentStep()
+  carbohydratesMin: carbohydratesUnit.getCurrentMin()
+  carbohydratesMax: carbohydratesUnit.getCurrentMax()
 
   labels:
-    editHour: "Aggregated time range [hour]"
-    glucoseMinimum: "Target glucose in a few hours [#{DataLocalStorage.getGlucoseUnit().id}]"
-    insulinPerCarbohydrates: "Insulin per carbohydrate unit [ie]"
-    glucosePerInsulin: "Glucose reduction per insulin unit [#{DataLocalStorage.getGlucoseUnit().id}]"
-    glucosePerCarbohydrates: "Glucose increase per carbohydrate unit [#{DataLocalStorage.getGlucoseUnit().id}]"
-    glucose: "Current glucose [#{DataLocalStorage.getGlucoseUnit().id}]"
-    carbohydrates: "Targeted carbohydrate units [#{DataLocalStorage.getCarbohydatesUnit().id}]"
+    editHour: "#{languageUnit.getText('editHour')} [#{languageUnit.getText('hour')}]"
+    glucoseMinimum: "#{languageUnit.getText('glucoseMinimum')} [#{glucoseUnit.getId()}]"
+    insulinPerCarbohydrates: "#{languageUnit.getText('insulinPerCarbohydrates')} [ie]"
+    glucosePerInsulin: "#{languageUnit.getText('glucosePerInsulin')} [#{glucoseUnit.getId()}]"
+    glucosePerCarbohydrates: "#{languageUnit.getText('glucosePerCarbohydrates')} [#{glucoseUnit.getId()}]"
+    glucose: "#{languageUnit.getText('glucose')} [#{glucoseUnit.getId()}]"
+    carbohydrates: "#{languageUnit.getText('carbohydrates')} [#{carbohydratesUnit.getId()}]"
+
+  text: (code) ->
+    languageUnit.getText(code)
+
+  languageIds: LanguageUnit.getLanguageIds()
 
   compute: ->
-    @log "compute-enter"
     return if not @isDomReady()
     dataLine = @editDataLine()
     @glucoseMinimal = dataLine.glucoseMinimal
@@ -319,12 +487,11 @@ Polymerase.setup "bp-bolus",
     @glucosePerCarbohydrates = dataLine.glucosePerCarbohydrates
     [minimal,maximal] = dataLine.calculate(@glucose, @carbohydrates)
     @proposalInsulin = dataLine.proposeInsulin(@glucose, @carbohydrates)
-    @proposalGlucose = Mathx.rounded(dataLine.comeOut(@glucose, @carbohydrates, @proposalInsulin), DataLocalStorage.getGlucoseUnit().step)
+    @proposalGlucose = Mathx.rounded(dataLine.comeOut(@glucose, @carbohydrates, @proposalInsulin), glucoseUnit.getCurrentStep())
     @proposalCarbohydrates = Mathx.rounded(dataLine.proposeCarbohydrates(@glucose), 0.25)
     if @proposalCarbohydrates > @carbohydrates
       @carbohydrates = @proposalCarbohydrates
       @compute()
-    @log "compute-exit"
 
   save: ->
     return if not @isDomReady()
@@ -334,20 +501,21 @@ Polymerase.setup "bp-bolus",
     dataLine.insulinPerCarbohydrates = @insulinPerCarbohydrates
     dataLine.glucosePerInsulin = @glucosePerInsulin
     dataLine.glucosePerCarbohydrates = @glucosePerCarbohydrates
-    DataLocalStorage.save()
+    DataLinesStorage.save()
     @compute()
 
 # --- debug pane ----------------------------------------------------------------------
 
-  importExport: "---"
+  importExport: ""
 
   reset: ->
-    LocalStorage.clear()
-    window.location.reload()
+    if window.confirm("This will delete all local application data. Are you sure?")
+      LocalStorage.clear()
+      window.location.reload()
 
   export: ->
-    @$.importExportArea.value = DataLocalStorage.export()
+    @$.importExportArea.value = DataLinesStorage.export()
 
   import: ->
-    DataLocalStorage.import(@$.importExportArea.value)
+    DataLinesStorage.import(@$.importExportArea.value)
     @compute()
