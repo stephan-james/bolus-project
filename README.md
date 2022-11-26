@@ -7,6 +7,10 @@ To become familiar with the app itself you should read further at the projects h
 
 http://stephan-james.github.io/bolus-project
 
+or start the app immediatly [__here__](http://stephan-james.github.io/bolus-project/application/).
+
+![AppImage](http://stephan-james.github.io/bolus-project/images/bolus@iphone.png)
+
 ## Code
 
 To experiment with the code and the underlying technologies see the projects wiki at
